@@ -18,9 +18,9 @@ MAG_EXTENSIONS=("MagnetoDebug")
 echo "Downloading Magerun Phar..."
 if [[ ! -f "$MR_PHAR_FILE" ]]; then
     if [ `builtin type -p curl` ]; then 
-		curl -o n98-magerun.phar $MR_PHAR_URL;
+		curl -o $MR_PHAR_FILE $MR_PHAR_URL;
 	elif [ `builtin type -p wget` ]; then 
-		wget -o n98-magerun.phar $MR_PHAR_URL; 
+		wget -o $MR_PHAR_FILE $MR_PHAR_URL; 
 	else
 		echo "'curl' or 'wget' commands are not available. Please install one of them before going further";
 		exit 0
@@ -32,7 +32,7 @@ echo "Download done!!!"
 echo "Magento installing..."
 read -p "Are you sure to use config settings in the script? Continue (y/n)?" prompt
 if [[ $prompt == "y" || $prompt == "Y" ]]; then
-	php n98-magerun.phar install \
+	php $MR_PHAR_FILE install \
 		--dbHost="localhost" \
 		--dbUser=$MAG_DB_USER \
 		--dbPass=$MAG_DB_PASS \
@@ -41,16 +41,22 @@ if [[ $prompt == "y" || $prompt == "Y" ]]; then
 		--useDefaultConfigParams=yes \
 		--magentoVersionByName=$MAG_VERSION \
 		--installationFolder="." \
-		--baseUrl=$MAG_BASE_URL
-	
-	php n98-magerun.phar admin:user:change-password $MAG_ADMIN_USER $MAG_ADMIN_PASSWORD #change Admin default password
-	
+		--baseUrl=$MAG_BASE_URL			
 	
 	#install extensions
+	echo "Install extensions..." 
 	for i in ${MAG_EXTENSIONS[@]}; do
 		mage install http://connect20.magentocommerce.com/community/ $i
-	done	
-	echo "Done"
+	done		
+	
+	#Post-install
+	echo "Post install setup"
+	php $MR_PHAR_FILE admin:user:change-password $MAG_ADMIN_USER $MAG_ADMIN_PASSWORD #change Admin default password
+	php $MR_PHAR_FILE cache:disable #disable cache for development
+	php $MR_PHAR_FILE dev:log --on --global #turn on log
+	php $MR_PHAR_FILE dev:log:db --on #turn on db log
+	
+	echo "Installation completed !!!"
 else
 	echo "Installation is stopped!"
 fi

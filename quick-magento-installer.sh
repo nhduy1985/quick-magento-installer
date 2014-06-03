@@ -11,6 +11,7 @@ MAG_ADMIN_PASSWORD="magento123"
 #Should not change if you have no idea
 MR_PHAR_URL="https://raw.githubusercontent.com/netz98/n98-magerun/master/n98-magerun.phar"
 MR_PHAR_FILE="n98-magerun.phar"
+GIT_IGNORE_URL="https://raw.githubusercontent.com/nhduy1985/gitignores/master/magento.gitignore"
 MAG_EXTENSIONS=("MagnetoDebug")
 #---END Config settings--------
 
@@ -19,8 +20,10 @@ echo "Downloading Magerun Phar..."
 if [[ ! -f "$MR_PHAR_FILE" ]]; then
     if [ `builtin type -p curl` ]; then 
 		curl -o $MR_PHAR_FILE $MR_PHAR_URL;
+		COMMAND_DOWNLOAD="curl"
 	elif [ `builtin type -p wget` ]; then 
 		wget -o $MR_PHAR_FILE $MR_PHAR_URL; 
+		COMMAND_DOWNLOAD="wget"
 	else
 		echo "'curl' or 'wget' commands are not available. Please install one of them before going further";
 		exit 0
@@ -55,6 +58,10 @@ if [[ $prompt == "y" || $prompt == "Y" ]]; then
 	php $MR_PHAR_FILE cache:disable #disable cache for development
 	php $MR_PHAR_FILE dev:log --on --global #turn on log
 	php $MR_PHAR_FILE dev:log:db --on #turn on db log
+	
+	#Setup gitignore
+	$COMMAND_DOWNLOAD -o .gitignore $GIT_IGNORE_URL
+	echo -e "\n#ignore from quick-magento-installer\nquick-magento-installer.sh\n98-magerun.phar" >> .gitignore
 	
 	echo "Installation completed !!!"
 else

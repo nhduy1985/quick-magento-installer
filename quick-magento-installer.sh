@@ -4,7 +4,7 @@ MAG_DB_USER="root"
 MAG_DB_PASS=""
 MAG_DB_NAME="magento_db_test"
 MAG_VERSION="magento-ce-1.8.1.0" #Check the latest version at https://github.com/netz98/n98-magerun
-MAG_BASE_URL="http://magento.localserver" #A vhost domain, shoud not be localhost
+MAG_BASE_URL="http://site-name.localserver" #A vhost domain, shoud not be localhost AND do not use '_'
 MAG_ADMIN_USER="admin"
 MAG_ADMIN_PASSWORD="magento123"
 

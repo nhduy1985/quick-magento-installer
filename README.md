@@ -43,3 +43,13 @@ Usage
 'MagnetoDebug' extension
 --------------------------
 - Manual: http://www.magentocommerce.com/magento-connect/sstoiana/extension/6714/magnetodebug
+
+FAQ
+=====
+
+1. Error: ``Invalid URI supplied``
+	
+	- Problem: http://www.magentocommerce.com/boards/viewthread/37764/
+	
+	- Solution: ``MAG_BASE_URL`` must be valid URL without '_' (use '-' only, for example ``site-name-demo.localserver``) 
+	
